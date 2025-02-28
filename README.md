@@ -48,4 +48,5 @@ A semaphore is a synchronization primitive that controls access to shared resour
 - **Counting Semaphore**: Used to manage a set of resources.
 
 ### Deadlock
-D
+Deadlock is a situation where two or more processes are unable to proceed because each is waiting for the other to release resources. This section contains code to demonstrate deadlock and the methods to detect and resolve it.
+
