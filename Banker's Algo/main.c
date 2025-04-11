@@ -12,6 +12,24 @@ struct Process {
     int remainingNeed[R];
 };
 
+// Function to print matrices
+void printMatrices(struct Process p[], int available[], int n) {
+    printf("\nProcess\tAllocation\tMax Need\tRemaining Need\n");
+    for(int i = 0; i < n; i++) {
+        printf("P%d\t", p[i].pNo);
+        for(int j = 0; j < R; j++) printf("%d ", p[i].allocation[j]);
+        printf("\t\t");
+        for(int j = 0; j < R; j++) printf("%d ", p[i].maxNeed[j]);
+        printf("\t\t");
+        for(int j = 0; j < R; j++) printf("%d ", p[i].remainingNeed[j]);
+        printf("\n");
+    }
+    
+    printf("\nAvailable Resources: ");
+    for(int i = 0; i < R; i++) printf("%d ", available[i]);
+    printf("\n");
+}
+
 // RN = MN - ALLOC
 void calcRemainingNeed(struct Process p[], int n) {
     for (int i = 0; i < n; i++) {
@@ -22,16 +40,21 @@ void calcRemainingNeed(struct Process p[], int n) {
 }
 
 void calcAvailableResource(struct Process p[], int available[], int n) {
-    // Initialize available resources to the initial resources
+    int temp[R];
+    for(int i = 0; i < R; i++) temp[i] = available[i];
+    
     for (int i = 0; i < n; i++) {
         for (int j = 0; j < R; j++) {
-            available[j] -= p[i].allocation[j]; // Subtract the allocated resources from available
+            temp[j] -= p[i].allocation[j];
         }
     }
 
-    // Print the remaining available resources
-    printf("Available resources after allocation:\n");
+    printf("\nInitial Available Resources: ");
+    for(int i = 0; i < R; i++) printf("%d ", available[i]);
+    
+    printf("\nAvailable after allocation: ");
     for (int i = 0; i < R; i++) {
+        available[i] = temp[i];
         printf("%d ", available[i]);
     }
     printf("\n");
@@ -39,60 +62,52 @@ void calcAvailableResource(struct Process p[], int available[], int n) {
 
 bool isSafeState(int safeSeq[], struct Process p[], int available[], int n) {
     int count = 0;
-    bool finish[n];  // To track finished processes
-    for (int i = 0; i < n; i++) {
-        finish[i] = false;
-    }
+    bool finish[n];
+    int work[R];
+    
+    for (int i = 0; i < n; i++) finish[i] = false;
+    for (int i = 0; i < R; i++) work[i] = available[i];
 
-    // Repeat until all processes are finished
     while (count < n) {
         bool found = false;
 
         for (int i = 0; i < n; i++) {
-            // Check if process is not finished and its remaining needs are less than or equal to available resources
             if (!finish[i]) {
                 bool canAllocate = true;
 
-                // Check if all the remaining needs are less than or equal to available resources
                 for (int j = 0; j < R; j++) {
-                    if (p[i].remainingNeed[j] > available[j]) {
+                    if (p[i].remainingNeed[j] > work[j]) {
                         canAllocate = false;
                         break;
                     }
                 }
 
-                // If the process can be allocated, add its resources to the available pool
                 if (canAllocate) {
-                    // Add the allocated resources of process i to available
                     for (int j = 0; j < R; j++) {
-                        available[j] += p[i].allocation[j];
+                        work[j] += p[i].allocation[j];
                     }
 
-                    // Add process number to the safe sequence
                     safeSeq[count++] = p[i].pNo;
                     finish[i] = true;
                     found = true;
-                    break;
+                    
+                    printf("\nExecuting P%d, Work becomes: ", p[i].pNo);
+                    for(int k = 0; k < R; k++) printf("%d ", work[k]);
                 }
             }
         }
 
-        // If no process could be allocated, then the system is not in a safe state
         if (!found) {
-            return false; // Not in a safe state
+            return false;
         }
     }
-
-    return true; // Safe state
+    return true;
 }
 
 int main() {
-    int n = 5;  // Number of processes
-
-    // Initial available resources
+    int n = 5;
     int available[] = {10, 5, 7};
 
-    // Define processes with their allocation and max needs manually
     struct Process process[] = {
         {1, {0, 1, 0}, {7, 5, 3}, {0, 0, 0}},
         {2, {2, 0, 0}, {3, 2, 2}, {0, 0, 0}},
@@ -101,24 +116,22 @@ int main() {
         {5, {0, 0, 2}, {5, 3, 3}, {0, 0, 0}},
     };
 
-    // Calculate Remaining Need for each process
     calcRemainingNeed(process, n);
-
-    // Calculate available resources after allocation
     calcAvailableResource(process, available, n);
+    printMatrices(process, available, n);
 
-    // Initialize the safe sequence array
     int safeSeq[n];
 
-    // Check if the system is in a safe state
+    printf("\nSafety Check Sequence:\n");
     if (isSafeState(safeSeq, process, available, n)) {
-        printf("System is in a safe state.\nSafe Sequence: ");
+        printf("\n\nSystem is in a safe state.\nSafe Sequence: ");
         for (int i = 0; i < n; i++) {
             printf("P%d ", safeSeq[i]);
+            if(i < n-1) printf("-> ");
         }
         printf("\n");
     } else {
-        printf("System is not in a safe state.\n");
+        printf("\nSystem is not in a safe state.\n");
     }
 
     return 0;

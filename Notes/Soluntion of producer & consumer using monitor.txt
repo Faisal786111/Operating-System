@@ -1,0 +1,33 @@
+monitor ProducerConsumer{
+	condition full, empty;
+	int count;
+	
+	procedure enter(){
+		if(count == N) wait(full); // B[] full, block 
+		produce_item(item);
+		count += 1;
+		if(count == 1) signal(empty); // B[] was empty, wake consumer
+	}
+
+	procedure remove(){
+		if(count == 0) wait(empty); // B[] empty, block 
+		remove_item(item);
+		count = count -1;
+		if(count == N-1) signal(full); // B[] was full, wake producer
+	}
+}
+
+end monitor;
+
+procducer(){
+	while(true){
+		ProducerConsumer.enter // call enter funciton in monitor	
+	}
+}
+
+consumer(){
+	while(true){
+		ProducerConsumer.remove // call remove function in monitor
+		process_item;	
+	}
+}

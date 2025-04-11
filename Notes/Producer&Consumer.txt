@@ -1,0 +1,26 @@
+void producer(void){
+	int temp;
+	while(true){
+		producer_item(temp);
+		while(count == n);
+		buffer[in] = temp;
+		in = (in+1) mod n;
+		count +=1;
+		// i1: load Rp, m[count]
+		// i2: INC Rp
+		// i3: store m[count], Rp	
+	}
+}
+
+void consumer(void){
+	while(true){
+		while(count == 0);
+		itemC = buffer[out];
+		out = (out +1 ) modn
+		count -= 1;
+		// i1: load Rc, m[count]	
+		// i2: DEC Rc
+		// i3: store m[count], Rc
+		process_item(itemC);
+	}
+}

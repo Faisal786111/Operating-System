@@ -1,0 +1,37 @@
+Solution of producer consumer problem 
+n = 8;
+Buffer[n];
+full = 0; // No of filled slots 
+empty =n; // No of empty slots 
+semaphore s = 1;
+
+in = 0; // used by producer
+out = 0;// used by consumer
+
+void producer(void){
+	int temp;
+	while(true){
+		produce_item(temp);
+		// buffer full?
+		while(full == n);
+		up(full); // add one item 
+		down(S);
+		Buffer[in] = temp;
+		in = (in +1) mod n;
+		up(s);
+		down(empty);	
+	}
+}
+
+void consumer(void){
+	while(true){
+		// Check buffer is empty 
+		while(full == 0);
+		up(empty);
+		down(s);
+		itemC = buffer[out];
+		out = (out +1) mod n;
+		up(s);
+		down(full);
+	}
+}

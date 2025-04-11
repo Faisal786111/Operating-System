@@ -1,0 +1,40 @@
+int Rc = 0; //no of readers 
+semaphore mutex = 1; // control Rc
+semaphore db= 1; // control db 
+
+void Reader(void){
+	while(true){
+		down(mutex); // reader's entry 
+		rc +=1;
+		if(rc == 1){
+			down(db); // lock db
+		}	
+		up(mutex);
+		read_database();
+		down(mutex);
+
+		down(mutex); // reader's exit 
+		rc -=1;
+		if(rc == 0){
+			up(db); // unlock db
+		}
+		up(mutex);
+		process_data;
+	}
+}
+
+void Writer(void){
+	while(true){
+		down(db); // lock db 
+		write_database();
+		up(db); // unlock db
+	}
+}
+
+
+// Explain 4 cases:
+R-R
+R-W
+W-R
+W-W
+
