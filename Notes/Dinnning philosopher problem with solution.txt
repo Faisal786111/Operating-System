@@ -1,0 +1,44 @@
+Dinning Philosopher problem
+
+
+void Philospher(void){
+
+	while(true){
+		// Thinking state
+		Thinking();
+
+		take_fork(i); // left fork 
+		take_fork((i+1) mod N) // right fork 
+		
+		eating();
+
+		put_fork(i);
+		put_fork((i+1) mod N);
+	}
+}
+
+case 1 : Serial Execution 
+case 2: Concurrent 
+case 3: all philophers take left fork only 
+
+
+Solution using Semaphore
+
+void Philosopher(void){
+	N = 5; // No of forks
+	for(i = 0 to N-1){
+		S[i] = 1;	
+	}
+	
+	while(true){
+		Thinking();
+		
+		wait(take_fork(Si)); // left fork
+		wait(take_fork(S(i+1) mod N); // right fork 
+		
+		eat();
+
+		signal(put_fork(Si));
+		signal(put_fork(S(i+1) mod N);
+	}
+}
