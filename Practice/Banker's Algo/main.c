@@ -69,7 +69,7 @@ int isSafeState(int safeSeq[], struct banker process[], int n, int available[]){
     int finish[P] = {0};
 
     while(completed < n){
-        int found = 0;
+        int found = 0; // used to detect deadlocked process
 
         for(i = 0; i < n; i++){
             if(!finish[i]){
