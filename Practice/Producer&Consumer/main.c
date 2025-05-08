@@ -22,7 +22,7 @@ void Producer(int item){
 void Consumer(){
     // if buffere is empty 
     if(itemCount <= 0){
-        printf("Buffere is full.\n");
+        printf("Buffere is Empty.\n");
     }
     int consumedItem = buffer[--itemCount];
     printf("Consumed Item: %d\n", consumedItem);
