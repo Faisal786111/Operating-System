@@ -1,8 +1,8 @@
 OS Experiments
 
 1. Cpu Scheduling Algos like FCFS, SJF  etc (completed)
-2. Producer & Consumer
-3. Banker's Algorithm
-4. Memory allocation techniques like first fit, next fit, best  fit , worst fit.
-5. Page replacement policies like FIFO  , LRU , OPTIMAL & LFU.
+2. Producer & Consumer (completed)
+3. Banker's Algorithm (Completed)
+4. Memory allocation techniques like first fit, next fit, best  fit , worst fit. (completed)
+5. Page replacement policies like FIFO  , LRU , OPTIMAL & LFU. (Completed)
 6. Disk Scheduling algos FCFS, SSTF, SCAN, LOOK, C-SCAN, C-LOOK.
