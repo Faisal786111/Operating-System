@@ -46,8 +46,8 @@ int main() {
             printf("\nIdle time: %d -> %d\n", temp, arr[i].AT);
             temp = arr[i].AT; // Update current time
         }
-
         arr[i].CT = temp + arr[i].BT; // Compute Completion Time
+        printf("%d| P%d |%d\n",temp , arr[i].pNo, arr[i].CT);
         arr[i].TAT = arr[i].CT - arr[i].AT; // Turnaround Time
         arr[i].WT = arr[i].TAT - arr[i].BT; // Waiting Time
 
