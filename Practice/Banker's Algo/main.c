@@ -1,20 +1,19 @@
-// Banker's Algorithm 
+// Banker's Algorithm
+
 #include <stdio.h>
 
 #define P 10
 #define R 3
-
-struct banker{
+struct Banker{
     int pNo;
     int allocation[R];
     int maxNeed[R];
     int remainingNeed[R];
 };
 
-// RN = MN - A
-void calculateRemainingNeed(struct banker process[], int n){
+// RN = MX - AL
+void calculateRemainingNeed(struct Banker process[], int n){
     int i, j;
-
     for(i = 0; i < n; i++){
         for(j = 0; j < R; j++){
             process[i].remainingNeed[j] = process[i].maxNeed[j] - process[i].allocation[j];
@@ -22,32 +21,34 @@ void calculateRemainingNeed(struct banker process[], int n){
     }
 }
 
-void calculateAvailableMatrix(struct banker process[], int n, int available[]){
-    int temp[R];
-    int i, j;
+void calculateAvailable(struct Banker process[], int n, int available[]){
+    int i, j, temp[R];
+
     for(i = 0; i < R; i++){
         temp[i] = available[i];
     }
-
-    // calc available matrix 
+    
+    // Calc available matrix 
     for(i = 0; i < n; i++){
         for(j = 0; j < R; j++){
             temp[j] -= process[i].allocation[j];
         }
     }
 
-     printf("\nInitial Available Resources: ");
-    for(int i = 0; i < R; i++) printf("%d ", available[i]);
-    
-    printf("\nAvailable after allocation: ");
-    for (int i = 0; i < R; i++) {
+    // Initial Available Matrix
+    printf("\nAvailable Matrix Before Allocation:\n");
+    for(i = 0; i < R; i++){
+        printf("%d ", available[i]);
+    }
+
+    printf("\nAvailable Matrix After Allocation:\n");
+    for(i = 0; i < R; i++){
         available[i] = temp[i];
         printf("%d ", available[i]);
     }
-    printf("\n");
 }
 
-void printMatrices(struct banker process[], int n, int available[]){
+void printMatrices(struct Banker process[], int n, int available[]){
     printf("\nProcess\tAllocation\tMax Need\tRemaining Need\n");
     for(int i = 0; i < n; i++) {
         printf("P%d\t", process[i].pNo);
@@ -64,13 +65,14 @@ void printMatrices(struct banker process[], int n, int available[]){
     printf("\n");
 }
 
-int isSafeState(int safeSeq[], struct banker process[], int n, int available[]){
-    int completed = 0, i, j;
-    int finish[P] = {0};
+int isSafeState(int safeSeq[], struct Banker process[], int n, int available[]){
+    int finish[P] = {0}; // For tracking how many processes are finished 
+    int completed = 0;
+    int i, j;
 
+    // Loop until all the processes are completed 
     while(completed < n){
-        int found = 0; // used to detect deadlocked process
-
+        int found = 0; // To detect deadlocked process 
         for(i = 0; i < n; i++){
             if(!finish[i]){
                 int canAllocate = 1;
@@ -81,36 +83,37 @@ int isSafeState(int safeSeq[], struct banker process[], int n, int available[]){
                     }
                 }
 
+                // If not then we can allocate the resources
                 if(canAllocate){
                     for(j = 0; j < R; j++){
                         available[j] += process[i].allocation[j];
                     }
 
+                    // Update Safe Seq, completion , finish & found
                     safeSeq[completed++] = process[i].pNo;
-                    found = 1;
                     finish[i] = 1;
-                }
+                    found = 1;
+                } 
             }
         }
 
         if(!found){
-            return 0; // systen is in the unsafe state 
+            return 0; // There is a deadlock
         }
     }
 
-    return 1; // system is in the safe sate
+    return 1; // There is no deadlock 
 }
 
-
-
-
 int main(){
-    int n = 5, i; // No of process 
+    // Input no of processes
+    int n = 5, i, safeSeq[n];
 
-    int available[R] = {10, 5, 7};
+    // Input available matrix 
+    int available[] = {10, 5, 7};
 
-    // Input Banker's details 
-    struct banker process[] = {
+    // Input process details 
+    struct Banker process[] = {
         {1, {0, 1, 0}, {7, 5, 3}, {0, 0, 0}},
         {2, {2, 0, 0}, {3, 2, 2}, {0, 0, 0}},
         {3, {3, 0, 2}, {9, 0, 2}, {0, 0, 0}},
@@ -118,29 +121,29 @@ int main(){
         {5, {0, 0, 2}, {5, 3, 3}, {0, 0, 0}},
     };
 
-    // Calculate remaining need 
+    // Calculate Remaining Need 
     calculateRemainingNeed(process, n);
 
-    // Calculate available matrix 
-    calculateAvailableMatrix(process, n, available);
+    // Calculate Available Matrix 
+    calculateAvailable(process, n, available);
 
-    // Print matrix
+    // Print matrices 
     printMatrices(process, n, available);
 
-    // Check Safe or Unsafe state
-    int safeSeq[n];
-    printf("\nSafety checking:\n");
+    // Check Safe or unsafe state
+    printf("\nSafety Checking:\n");
     if(isSafeState(safeSeq, process, n, available)){
-        printf("\nSystem is in the safe state\n");
-        printf("\nSafe sequence is:\n");
+        printf("System is in the safe state.\n");
+        printf("Sequence: \n");
         for(i = 0; i < n; i++){
-            printf("P%d", safeSeq[i]);
+            printf("P%d ", safeSeq[i]);
             if(i < n-1){
-                printf("->");
+                printf("-> ");
             }
         }
-    }else {
-        printf("\nSystem is in the unsafe state.\n");
+    }else{
+        printf("System is not in the safe state.\n");
     }
+
     return 0;
 }
