@@ -52,6 +52,7 @@ int main()
         }
         
         arr[i].CT = temp + arr[i].BT;
+        printf("%d| P%d |%d\n",temp , arr[i].pNo, arr[i].CT);
         arr[i].TAT = arr[i].CT - arr[i].AT;
         arr[i].WT = arr[i].TAT - arr[i].BT;
         
