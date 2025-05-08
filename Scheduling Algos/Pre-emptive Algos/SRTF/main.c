@@ -49,6 +49,8 @@ void srtfPreemptive(struct Process p[], int n) {
         } else {
             // Execute the process for 1 unit of time
             p[shortestIndex].remain_BT--;
+            // Gantt chart
+            printf("%d| P%d |%d\n", currentTime , p[shortestIndex].pNo, currentTime+1);
             currentTime++;
 
             if (p[shortestIndex].remain_BT == 0) {
